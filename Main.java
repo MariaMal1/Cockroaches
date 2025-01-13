@@ -11,7 +11,7 @@ public class Main {
         System.out.println("Enter the labor cost per hour: ");
         double laborCost = scanner.nextDouble();
 
-        System.out.println("Enter the available water for irrigation (in liters): ");
+        System.out.println("Enter the available water for irrigation (in liters )(Average required water amount per hectare: 950,000 liters): ");
         double availableWater = scanner.nextDouble();
 
         // Δημιουργία δεδομένων και εκκίνηση της μηχανής βελτιστοποίησης
