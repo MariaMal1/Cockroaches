@@ -36,3 +36,25 @@ Welcome to **Cockroaches**, a Java-based program designed to help farmers optimi
     -  mvn dependency:copy-dependencies
     -  mvn package
     -  mvn exec:java -Dexec.mainClass="com.example.Main"  
+
+## Project Structure   
+#### Below is an overview of the repository structure and the role of each file:
+cockroaches/  
+├── Main.java               # Entry point of the program  
+├── OptimizationEngine.java # Contains the optimization logic using Apache Commons Math3  
+├── PlantsData.java         # Handles user input and stores field-specific data  
+├── PlantsDB.java           # Defines fixed data for various plant types  
+├── ReportGenerator.java    # Generates detailed output reports  
+└── README.md               # Documentation of the project  
+
+## Key Classes and Functions
+1. Main
+- Handles user input and orchestrates the execution of the optimization and reporting modules.
+2. OptimizationEngine
+- Core logic for calculating the optimal planting configuration using the SimplexOptimizer from Apache Commons Math3.
+3. PlantsData
+- Stores field-related information like area, labor cost, and water availability.
+4. PlantsDB
+- Stores fixed data for plant types, including spacing, labor hours, water requirements, costs, and revenues.
+5. ReportGenerator
+- Compiles the results of the optimization and outputs a detailed summary, including profit and usage metrics.
