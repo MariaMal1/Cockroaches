@@ -58,3 +58,39 @@ cockroaches/
 - Stores fixed data for plant types, including spacing, labor hours, water requirements, costs, and revenues.
 5. ReportGenerator
 - Compiles the results of the optimization and outputs a detailed summary, including profit and usage metrics.
+
+
+
+## Running Example:
+#### Example Input:
+Enter the area of the field (in square meters): 5000  
+Enter the labor cost per hour: 10.5  
+Enter the available water for irrigation (in liters): 25000 
+
+#### Example Output
+
+Optimal Planting Configuration:  
+Apples: 200  
+  Area: 900.0 m²  
+  Labor Hours: 444.0  
+  Water Required: 28000.0 liters  
+  Cost: 1800.0  
+  Revenue: 9100.0  
+[...]
+
+Summary:  
+Total Area Used: 4500.0 m²  
+Total Labor Hours: 200.0  
+Total Water Required: 24000.0 liters  
+Total Water Cost: 4.8  
+Total Labor Cost: 2100.0  
+Total Cost: 3904.8  
+Total Revenue: 5000.0  
+Total Profit: 1095.2  
+
+## License
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+## Acknowledgments & Contributing
+Dear user thank you for your interest in our program! We’re thrilled that you’ve taken the time to explore Cockroaches and hope it helps you optimize your farming processes effectively. Your feedback and suggestions are always welcome, as they help us improve and grow. We appreciate your support and hope you enjoy using our program!"  
+If you'd like to contribute, feel free to submit a pull request or open an issue.
