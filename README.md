@@ -88,6 +88,12 @@ Total Cost: 3904.8
 Total Revenue: 5000.0  
 Total Profit: 1095.2  
 
+
+## UML Diagram   
+Below is the UML diagram of the project's architecture:  
+![UML Diagram](./uml-diagram.png)
+
+
 ## License
 This project is licensed under the MIT License. See the LICENSE file for details.
 
