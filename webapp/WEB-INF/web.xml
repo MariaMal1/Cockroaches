@@ -1,0 +1,25 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="3.0">
+    <display-name>Plant Optimization</display-name>
+
+    <servlet>
+        <servlet-name>Home</servlet-name>
+        <jsp-file>/home.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Home</servlet-name>
+        <url-pattern>/home</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Result</servlet-name>
+        <jsp-file>/result.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Result</servlet-name>
+        <url-pattern>/result</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>home.jsp</welcome-file>
+    </welcome-file-list>
+</web-app>
