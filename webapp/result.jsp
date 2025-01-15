@@ -19,66 +19,70 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Optimization Results</h1>
-        <div class="results">
-            <% 
-                String areaParam = request.getParameter("area");
-                String laborCostParam = request.getParameter("laborCost");
-                String waterParam = request.getParameter("availableWater");
+    <h1>Optimization Results</h1>
 
-                int quantity = 0;
-                Double profit = 0.0;
-                Double aread = 0.0;
+    <%
+    PlantsData plantsData = new PlantsData(
+        Double.parseDouble(request.getParameter("area")),
+        Double.parseDouble(request.getParameter("laborCost")),
+        Double.parseDouble(request.getParameter("availableWater")));
 
-                if (areaParam != null && laborCostParam != null && waterParam != null) {
-                    try {
-                        // Parse input values
-                        int area = Integer.parseInt(areaParam);
-                        double laborCost = Double.parseDouble(laborCostParam);
-                        int availableWater = Integer.parseInt(waterParam);
-                         
+        OptimizationEngine engine = new OptimizationEngine(plantsData);
+        Map<String, Object> results = null;
 
-                        // Create PlantsData object and run optimization
-                        PlantsData plantsData = new PlantsData(area, laborCost, availableWater);
-                        OptimizationEngine engine = new OptimizationEngine(plantsData);
+        try {
+            results = engine.optimizeAndDisplay();
+        } catch (Exception e) {
+            out.println("<p style='color: red;'>Error during processing: " + e.getMessage() + "</p>");
+        }
+    %>
 
-                        // Call optimization logic
-                        Map<String, Object> results = engine.optimizeAndDisplay();
-                        List<Map<String, Object>> plants = (List<Map<String, Object>>) results.get("plants");
-                         aread =  (Double) results.get("totalAreaUsed"); %>
-                         
-                         quantity = (int) results.get("quantity");
-                         profit =  (Double) results.get("totalProfit");
-                        %>
-
-                        <table>
-                            <tr>
-                                <th>Plant</th>
-                                <th>Quantity</th>
-                                <th>Area Used</th>
-                                <th>Profit</th>
-                            </tr>
-                            <% for (Map<String, Object> plant : plants) { %>
-                                <tr>
-                                    <td><%= plant.get("name") %></td>
-                                    <td><%= quantity %></td>
-                                    <td><%= aread %></td>
-                                    <td>€<%= profit %></td>
-                                </tr>
-                            <% } %>
-                        </table>
-                        <% 
-                    } catch (Exception e) {
-                        out.println("<p>Error during optimization: " + e.getMessage() + "</p>");
-                    } finally {
-                        out.println(" "); // Placeholder for finally block output
-                    }
-                } else {
-                    out.println("<p>No input data provided. Please return to the home page and try again.</p>");
+    <c:if test="${results != null}">
+        <table style="width: 100%; border-collapse: collapse; margin-top: 20px; font-family: Arial, sans-serif;">
+            <thead>
+                <tr style="background-color: #f2f2f2; text-align: left;">
+                    <th style="border: 1px solid #ddd; padding: 10px;">Plant Name</th>
+                    <th style="border: 1px solid #ddd; padding: 10px;">Quantity</th>
+                    <th style="border: 1px solid #ddd; padding: 10px;">Used Area</th>
+                    <th style="border: 1px solid #ddd; padding: 10px;">Profit (€)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% 
+                if (results != null) { 
+                    List<Map<String, Object>> plants = (List<Map<String, Object>>) results.get("plants");
+                    for (Map<String, Object> plant : plants) { 
+                %>
+                <%
+                String backgroundColor = "#fbeaea"; // Default color (red for quantity <= 0)
+                if (plant.get("quantity") != null && (int) plant.get("quantity") > 0) {
+                    backgroundColor = "#eaf8e6"; // Green for quantity > 0
                 }
             %>
-        </div>
-    </div>
+            <tr style="border: 1px solid #ddd; background-color: backgroundColor;">
+                        <td style="border: 1px solid #ddd; padding: 10px;"><%= plant.get("name") %></td>
+                        <td style="border: 1px solid #ddd; padding: 10px; text-align: center;"><%= plant.get("quantity") %></td>
+                        <td style="border: 1px solid #ddd; padding: 10px; text-align: center;"><%= plant.get("areaUsed") %> m²</td>
+                        <td style="border: 1px solid #ddd; padding: 10px; text-align: right;">€<%= plant.get("profit") %></td>
+                    </tr>
+                <% 
+                    } 
+                } else { 
+                %>
+                    <tr>
+                        <td colspan="4" style="border: 1px solid #ddd; padding: 10px; text-align: center; font-style: italic;">
+                            No data available.
+                        </td>
+                    </tr>
+                <% 
+                } 
+                %>
+            </tbody>
+        </table>
+
+        <h2>Overall Results</h2>
+        <p>Total Area Used: <%= results.get("totalAreaUsed") %></p>
+        <p>Total Profit: €<%= results.get("totalProfit") %></p>
+    </c:if>
 </body>
 </html>
