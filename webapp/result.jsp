@@ -1,3 +1,5 @@
+//Για να τρέξει η jsp στο vscode κατέβασα την εφαρμογή tomcat
+
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.example.*" %>
