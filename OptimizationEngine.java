@@ -15,10 +15,12 @@ public class OptimizationEngine {
         this.plants = plants;
     }
 
-    public void optimizeAndDisplay() {
+    public String optimizeAndDisplay() {
+        StringBuilder results = new StringBuilder();
+
         double[] profitCoefficients = getProfitCoefficients();
         validateArray(profitCoefficients, "Profit coefficients");
-        System.out.println("Profit coefficients: " + Arrays.toString(profitCoefficients));
+        results.append("Profit coefficients: ").append(Arrays.toString(profitCoefficients)).append("\n");
 
         double[] areaConstraints = getAreaConstraints();
         validateArray(areaConstraints, "Area constraints");
@@ -30,12 +32,11 @@ public class OptimizationEngine {
         constraints.add(new LinearConstraint(areaConstraints, Relationship.LEQ, plants.getArea()));
         constraints.add(new LinearConstraint(waterConstraints, Relationship.LEQ, plants.getAvailableIrrigation()));
 
-        System.out.println("Linear constraints:");
-        for (LinearConstraint constraint : constraints) {
-            System.out.println("Coefficients: " + Arrays.toString(constraint.getCoefficients().toArray()));
-            System.out.println("Relationship: " + constraint.getRelationship());
-            System.out.println("Value: " + constraint.getValue());
-        }
+        // Περιορισμός στο μέγιστο αριθμό ενός φυτού (π.χ. Apples)
+        constraints.add(new LinearConstraint(new double[] { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, Relationship.LEQ, 10));
+
+        // Περιορισμός για τουλάχιστον 2 διαφορετικά φυτά
+        constraints.add(new LinearConstraint(new double[] { 1, 1, 0, 0, 0, 0, 0, 0, 0, 0 }, Relationship.GEQ, 2));
 
         SimplexSolver solver = new SimplexSolver();
         try {
@@ -53,35 +54,38 @@ public class OptimizationEngine {
             double[] plantQuantities = solution.getPoint();
             double totalProfit = solution.getValue();
 
-            System.out.println("\nOptimal Planting Configuration:");
-            System.out.printf("%-15s %-15s %-15s %-15s\n", "Plant", "Quantity", "Used Area (m²)", "Profit (€)");
+            results.append("\nOptimal Planting Configuration:\n");
+            results.append(
+                    String.format("%-15s %-15s %-15s %-15s\n", "Plant", "Quantity", "Used Area (m²)", "Profit (€)"));
             double totalAreaUsed = 0.0;
             double totalWaterUsed = 0.0;
 
             for (int i = 0; i < plantsDB.getNumberOfPlants(); i++) {
-                if (plantQuantities[i] > 0) { // Εμφάνιση μόνο για φυτά με ποσότητα > 0
-                    int usedArea = (int) (plantQuantities[i] * plantsDB.plantsFixedData[i][0]);
-                    int usedWater = (int) (plantQuantities[i] * plantsDB.plantsFixedData[i][1]);
-                    int plantProfit = (int) (plantQuantities[i] * profitCoefficients[i]);
+                if (plantQuantities[i] > 0) {
+                    double usedArea = plantQuantities[i] * plantsDB.plantsFixedData[i][0];
+                    double usedWater = plantQuantities[i] * plantsDB.plantsFixedData[i][1];
+                    double plantProfit = plantQuantities[i] * profitCoefficients[i];
 
                     totalAreaUsed += usedArea;
                     totalWaterUsed += usedWater;
 
-                    System.out.printf(Locale.US, "%-15s %-15d %-15d %-15d\n",
-                            PlantsDB.plantsNames[i], (int) plantQuantities[i], usedArea, plantProfit);
+                    results.append(String.format(Locale.US, "%-15s %-15.2f %-15.2f %-15.2f\n",
+                            PlantsDB.plantsNames[i], plantQuantities[i], usedArea, plantProfit));
                 }
             }
 
-            System.out.println("\nConstraints Used:");
-            System.out.printf(Locale.US, "Total Area Used: %.2f m² (of %.2f m²)\n", totalAreaUsed, plants.getArea());
-            System.out.printf(Locale.US, "Total Water Used: %.2f liters (of %.2f liters)\n", totalWaterUsed,
-                    plants.getAvailableIrrigation());
-            System.out.printf(Locale.US, "\nTotal Profit: %.2f €\n", totalProfit);
+            results.append("\nConstraints Used:\n");
+            results.append(String.format(Locale.US, "Total Area Used: %.2f m² (of %.2f m²)\n", totalAreaUsed,
+                    plants.getArea()));
+            results.append(String.format(Locale.US, "Total Water Used: %.2f liters (of %.2f liters)\n", totalWaterUsed,
+                    plants.getAvailableIrrigation()));
+            results.append(String.format(Locale.US, "\nTotal Profit: %.2f €\n", totalProfit));
 
         } catch (Exception e) {
-            System.out.println("An error occurred during optimization: " + e.getMessage());
-            e.printStackTrace();
+            results.append("An error occurred during optimization: ").append(e.getMessage()).append("\n");
         }
+
+        return results.toString();
     }
 
     private double[] getProfitCoefficients() {
@@ -92,7 +96,7 @@ public class OptimizationEngine {
             double Cl = plants.getLaborCost();
             double Hi = plantsDB.plantsFixedData[i][4];
             double Wa = plantsDB.plantsFixedData[i][1];
-            double Cw = 0.0002;
+            double Cw = 0.0003; // Αυξημένο κόστος νερού
 
             profits[i] = Ri - Ci - (Cl * Hi) - (Wa * Cw);
             if (profits[i] < 0) {
