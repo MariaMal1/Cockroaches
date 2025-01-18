@@ -24,17 +24,29 @@ Welcome to **Cockroaches**, a Java-based program designed to help farmers optimi
 1. Install Java JDK 8+.
 2. Install Maven from (https://maven.apache.org/install.html)  
 3. Add the Apache Commons Math3 library to your project.
-4. Clone or download the repository:
-   ```bash
-   git clone https://github.com/username/cockroaches.git
+4. Run the following command to generate a new project:
+ mvn archetype:generate -DgroupId=com.example -DartifactId=myproject -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+myproject/
+├── src/
+│   ├── main/
+│   │   └── java/
+│   │       └── com/example/
+│   │           ├── Main.java
+│   │           ├── OptimizationEngine.java
+│   │           ├── PlantsData.java
+│   │           ├── PlantsDB.java
+│   │           └── ReportGenerator.java
+│   └── test/
+│       └── java/
+│           └── com/example/
+│               ├── MainTest.java
+│               └── OptimizationEngineTest.java
+├── pom.xml
 
-5. Open the files in your favorite Java IDE (e.g., IntelliJ IDEA, Eclipse).
-6. Navigate to the project directory and clean-build the project:  
+5. Navigate to the project directory and clean-build the project:  
    mvn clean install    
- 7. Run the programm using the code bellow....
-    -  mvn compile
-    -  mvn dependency:copy-dependencies
-    -  mvn package
+ 6. Run the program using the code bellow....
+    -  mvn clean install
     -  mvn exec:java -Dexec.mainClass="com.example.Main"  
 
 ## Project Structure   
